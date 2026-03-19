@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>うるさいわボケェ</title>
+    </head>
+    <body style="background-color: #ff0000">
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <h1 style="font-size: 100px; font-family: serif; text-align: center;" id="flash">うるさいわボケェ</h1>
+    </body>
+        <script>
+            const h1 = document.getElementById("flash");
+            let isblack = true;
+
+            setInterval(() => {
+                h1.style.color = isblack ? "black" : "white";
+                isblack = !isblack;
+            }, 100);
+</script>
+</html>
