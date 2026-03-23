@@ -3,23 +3,101 @@
     <head>
         <title>うるさいわボケェ</title>
     </head>
-    <body style="background-color: #ff0000">
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <h1 style="font-size: 100px; font-family: serif; text-align: center;" id="flash">うるさいわボケェ</h1>
-    </body>
-        <script>
-            const h1 = document.getElementById("flash");
-            let isblack = true;
 
-            setInterval(() => {
+    <body style="background-color: #ff0000">
+
+        <!-- 初期オーバーレイ -->
+        <div id="overlay" style="
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            z-index: 9999;
+            font-family: sans-serif;
+        ">
+            クリック or キー入力で開始
+        </div>
+
+        <br><br><br><br><br>
+        <h1
+            style="font-size: 100px; font-family: serif; text-align: center;"
+            id="flash"
+        >
+            うるさいわボケェ
+        </h1>
+
+    </body>
+
+    <script>
+        const h1 = document.getElementById("flash");
+        const overlay = document.getElementById("overlay");
+
+        let isblack = true;
+        let intervalId = null;
+        let isPlaying = false;
+        let isInitialized = false;
+        let justInitialized = false;
+
+        // 再生開始
+        function start() {
+            if (isPlaying) return;
+
+            intervalId = setInterval(() => {
                 h1.style.color = isblack ? "black" : "white";
                 isblack = !isblack;
+
                 const audio = new Audio("sound_1.mp3");
                 audio.play();
             }, 100);
-</script>
+
+            isPlaying = true;
+        }
+
+        // 停止
+        function stop() {
+            if (!isPlaying) return;
+
+            clearInterval(intervalId);
+            isPlaying = false;
+        }
+
+        // 初回入力
+        function init() {
+            if (isInitialized) return;
+
+            isInitialized = true;
+            justInitialized = true;
+
+            overlay.style.display = "none";
+            start();
+
+            // 次のイベントループで解除
+            setTimeout(() => {
+                justInitialized = false;
+            }, 0);
+        }
+
+        // 初回トリガー
+        document.addEventListener("keydown", init, { once: true });
+        document.addEventListener("click", init, { once: true });
+
+        // トグル
+        document.addEventListener("keydown", (e) => {
+            if (e.code === "Space" && isInitialized) {
+                e.preventDefault();
+
+                if (justInitialized) return;
+
+                if (isPlaying) {
+                    stop();
+                } else {
+                    start();
+                }
+            }
+        });
+    </script>
 </html>
