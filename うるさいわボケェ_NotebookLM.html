@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<style>
+  body, html { margin: 0; height: 100%; overflow: hidden; }
+  /* font-family を serif に変更 */
+  #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); color: white; display: flex; justify-content: center; align-items: center; z-index: 10; cursor: pointer; font-size: 2rem; font-family: sans-serif; }
+  #main { display: flex; justify-content: center; align-items: center; height: 100vh; font-size: 8rem; font-weight: bold; cursor: pointer; font-family: serif; }
+  .mode1 { color: #ff0000; background-color: #00ffff; }
+  .mode2 { color: #00ffff; background-color: #ff0000; }
+</style>
+</head>
+<body onkeydown="handleInput(event)">
+<div id="overlay" onclick="toggle()">開始（点滅注意）</div>
+<div id="main" onclick="toggle()">うるさいわボケェ</div>
+<script>
+  let timer = null;
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  function handleInput(e) { if (e.code === 'Space' || !timer) toggle(); }
+  function toggle() {
+    document.getElementById('overlay').style.display = 'none';
+    if (timer) { clearInterval(timer); timer = null; return; }
+    timer = setInterval(() => {
+      const el = document.getElementById('main');
+      el.className = el.className === 'mode1' ? 'mode2' : 'mode1';
+      const osc = audioCtx.createOscillator();
+      osc.type = 'sawtooth';
+      osc.connect(audioCtx.destination);
+      osc.start(); osc.stop(audioCtx.currentTime + 0.05);
+    }, 50);
+  }
+</script>
+</body>
+</html>
